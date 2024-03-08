@@ -1,0 +1,215 @@
+openapi: 3.0.0
+info:
+  title: Simple Message Server API SPECS
+  description: Simple Message Server API SPECS
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+tags:
+  - name: Users
+    description: Operations related to a user
+  - name: Auth
+    description: Operations related to authentication of the user
+paths:
+  /create:
+    post:
+      summary: create a user in the server
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        200:
+          description: success message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUserResponse'
+      tags:
+        - Auth
+  /auth/login:
+    post:
+      summary: login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        200:
+          description: success message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+      tags:
+        - Auth
+  /auth/logout:
+    post:
+      summary: logout user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogoutRequest'
+      responses:
+        200:
+          description: logged out successfully
+      tags:
+        - Auth
+  /users:
+    get:
+      summary: fetch all users in the server
+      responses:
+        200:
+          description: request executed successfuly
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserList'
+      tags:
+        - Users
+  /users/user/{username}/message:
+    get:
+      summary: Retrieve all unread messages of a user
+      parameters:
+        - name: username
+          in: path
+          description: username of the user to retrieve messages
+          required: true
+          schema:
+            type: string
+        - name: friend
+          in: query
+          description: username of the friend whose messages needs to be retrieved
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: User's messages retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserMessages'
+        404:
+          description: User not found
+      tags:
+        - Users
+    post:
+      summary: send message to specific user
+      parameters:
+        - name: username
+          in: path
+          description: username of the user to retrieve messages
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TextMessageObject'
+      responses:
+        200:
+          description: success message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TextMessageResponse'
+      tags:
+        - Users
+
+components:
+  schemas:
+    CreateUserResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: "status of response"
+        message:
+          type: string
+          description: "response message"
+    CreateUserRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        confirmPassword:
+          type: string
+      required:
+        - username
+        - password
+        - confirmPassword
+    UserList:
+      type: object
+      properties:
+        status:
+          type: string
+        data:
+          type: array
+          items:
+            type: string
+    UserMessages:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserMessage'
+    UserMessage:
+      type: object
+      properties:
+        username:
+          type: string
+        texts:
+          type: array
+          items:
+            type: string
+    TextMessageObject:
+      type: object
+      properties:
+        to:
+          type: string
+        text:
+          type: string
+    TextMessageResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        text:
+          type: string
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    LoginResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+    LogoutRequest:
+      type: object
+      properties:
+        username:
+          type: string
+
+

@@ -1,0 +1,93 @@
+import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.3'
+    id "org.openapi.generator" version "7.3.0"
+}
+
+apply plugin: 'io.spring.dependency-management'
+
+group = 'org.riomoney'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation('org.springframework.boot:spring-boot-starter-web')
+    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+   // implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation ("org.openapitools:openapi-generator-gradle-plugin:7.3.0")
+    implementation ("org.openapitools:jackson-databind-nullable:0.1.0")
+    implementation 'io.swagger.core.v3:swagger-core:2.2.20'
+    implementation 'javax.annotation:javax.annotation-api:1.3.2'
+    implementation 'javax.servlet:javax.servlet-api:4.0.1'
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+    implementation group: 'com.auth0', name: 'java-jwt', version: '2.0.1'
+    implementation group: 'com.h2database', name: 'h2', version: '2.2.222'
+    implementation 'org.projectlombok:lombok:1.18.26'
+    annotationProcessor "org.projectlombok:lombok:1.18.26"
+
+    // implementation group: 'org.springframework.security', name: 'spring-security-web', version: '6.2.2'
+   // implementation group: 'org.springframework.security', name: 'spring-security-config', version: '6.2.2'
+    //testImplementation platform('org.junit:junit-bom:5.9.1')
+    //testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+configurations {
+    configureEach {
+        exclude group: 'ch.qos.logback', module: 'logback-classic'
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+tasks.register('serverStubGenerator', GenerateTask) {
+    generatorName.set("spring")
+    library = "spring-boot"
+    inputSpec.set("$rootDir/src/main/resources/api-spec.yaml".toString())
+    outputDir.set("$buildDir/generated/openapi")
+    apiPackage.set("org.riomoney.controllers")
+    modelPackage.set("org.riomoney.model")
+    generateModelTests = false
+    generateApiTests = false
+    generateModelDocumentation = false
+    skipOverwrite = false
+    generateApiDocumentation = false
+    configOptions.set([
+            "dateLibrary"          : "java8",
+            "serializationLiberary": "jackson",
+            "artifactId"           : rootProject.name,
+            "artifactVersion"      : "0.0.1-SNAPSHOT",
+            "useBeanValidation"    : "false",
+            "interfaceOnly"        : "true",
+            "useTags"              : "true",
+            "singleContentTypes"   : "true",
+            "skipDefaultInterface" : "true"
+    ])
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir "${buildDir}/generated/openapi/src/main/java"
+        }
+    }
+}
+
+bootRun {
+    mainClass = "org.riomoney.Application"
+}
+bootJar {
+    "org.riomoney.Application"
+}
+
+openApiValidate {
+    inputSpec = "${rootDir}/src/main/resources/api-spec.yaml".toString()
+}
+
+compileJava.dependsOn("serverStubGenerator")
