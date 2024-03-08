@@ -1,7 +1,5 @@
 package org.riomoney.controllers;
 
-import org.apache.coyote.Response;
-import org.riomoney.entities.User;
 import org.riomoney.model.*;
 import org.riomoney.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
