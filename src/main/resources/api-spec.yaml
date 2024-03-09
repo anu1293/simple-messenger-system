@@ -182,6 +182,8 @@ components:
       properties:
         username:
           type: string
+        groupName:
+          type: string
         texts:
           type: array
           items:
