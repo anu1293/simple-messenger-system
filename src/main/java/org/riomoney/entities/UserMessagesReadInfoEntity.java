@@ -9,8 +9,8 @@ import java.sql.Timestamp;
 @ToString
 @Data
 @Entity
-@Table(name = "users_messages")
-public class UserMessagesEntity {
+@Table(name = "user_messages_read_info")
+public class UserMessagesReadInfoEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -18,18 +18,16 @@ public class UserMessagesEntity {
     private int id;
 
     @ManyToOne(fetch=FetchType.EAGER)
-    @JoinColumn(name="to_user")
-    private UserEntity to;
+    @JoinColumn(name="user_id")
+    private UserEntity user;
 
     @ManyToOne(fetch=FetchType.EAGER)
-    @JoinColumn(name="from_user")
-    private UserEntity from;
+    @JoinColumn(name="chat_id")
+    private ChatEntity chat;
 
-    @Column(name = "message")
-    private String message;
-
-    @Column(name = "message_timestamp")
-    private Timestamp timestamp;
+    @ManyToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name="message_id")
+    private MessageEntity message ;
 
     @Column(name = "is_read")
     private boolean isRead;

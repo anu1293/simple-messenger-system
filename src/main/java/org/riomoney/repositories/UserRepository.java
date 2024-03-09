@@ -11,6 +11,6 @@ import java.util.List;
 public interface UserRepository extends CrudRepository<UserEntity,Integer> {
     UserEntity findByUserName(String userName);
 
-    @Query("select userName from User")
+    @Query("select userName from UserEntity")
     List<String> listUserNames();
 }

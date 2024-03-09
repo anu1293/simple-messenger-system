@@ -4,21 +4,17 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
 
-
 @ToString
 @Data
 @Entity
-@Table(name = "users")
-public class UserEntity {
+@Table(name = "groups")
+public class GroupEntity {
 
     @Column(name = "id")
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
 
-    @Column(name = "username",unique = true)
-    private String userName;
-
-    @Column(name = "password")
-    private String password;
+    @Column(name = "name")
+    private String name;
 }

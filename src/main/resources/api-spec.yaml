@@ -6,14 +6,17 @@ info:
 servers:
   - url: http://localhost:8080
 tags:
-  - name: Users
+  - name: users
     description: Operations related to a user
-  - name: Auth
+  - name: auth
     description: Operations related to authentication of the user
+  - name: messages
+    description: Operations related to users messages
 paths:
-  /create:
+  /auth/signup:
     post:
       summary: create a user in the server
+      operationId: signUp
       requestBody:
         required: true
         content:
@@ -28,9 +31,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/CreateUserResponse'
       tags:
-        - Auth
+        - auth
   /auth/login:
     post:
+      operationId: signIn
       summary: login user
       requestBody:
         required: true
@@ -46,9 +50,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/LoginResponse'
       tags:
-        - Auth
+        - auth
   /auth/logout:
     post:
+      operationId: signOut
       summary: logout user
       requestBody:
         required: true
@@ -60,9 +65,10 @@ paths:
         200:
           description: logged out successfully
       tags:
-        - Auth
+        - auth
   /users:
     get:
+      operationId: fetchAllUsers
       summary: fetch all users in the server
       responses:
         200:
@@ -72,9 +78,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserList'
       tags:
-        - Users
-  /users/user/{username}/message:
+        - users
+  /messages/user/{username}/getMessages:
     get:
+      operationId: fetchUserMessages
       summary: Retrieve all unread messages of a user
       parameters:
         - name: username
@@ -99,8 +106,9 @@ paths:
         404:
           description: User not found
       tags:
-        - Users
+        - messages
     post:
+      operationId: sendMessageToUser
       summary: send message to specific user
       parameters:
         - name: username
@@ -123,7 +131,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/TextMessageResponse'
       tags:
-        - Users
+        - messages
 
 components:
   schemas:
