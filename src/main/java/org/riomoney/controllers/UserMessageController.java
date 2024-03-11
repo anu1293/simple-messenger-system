@@ -1,6 +1,5 @@
 package org.riomoney.controllers;
 
-import org.apache.coyote.Response;
 import org.riomoney.model.TextMessageObject;
 import org.riomoney.model.TextMessageResponse;
 import org.riomoney.model.UserMessages;
@@ -23,11 +22,11 @@ public class UserMessageController implements MessagesApi{
 
     @Override
     public ResponseEntity<TextMessageResponse> sendMessageToUser(String messageType, TextMessageObject textMessageObject) {
-        switch(messageType) {
-            case "DIRECT": return ResponseEntity.ok(userMessageService.sendMessage(textMessageObject));
-            case "GROUP": return ResponseEntity.ok(groupMesageService.sendMessage(textMessageObject));
-        }
-        return (ResponseEntity<TextMessageResponse>) ResponseEntity.badRequest();
+        return switch (messageType) {
+            case "DIRECT" -> ResponseEntity.ok(userMessageService.sendMessage(textMessageObject));
+            case "GROUP" -> ResponseEntity.ok(groupMesageService.sendMessage(textMessageObject));
+            default -> (ResponseEntity<TextMessageResponse>) ResponseEntity.badRequest();
+        };
     }
 
 

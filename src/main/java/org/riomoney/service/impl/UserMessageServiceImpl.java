@@ -28,7 +28,7 @@ public class UserMessageServiceImpl implements UserMessageService {
     @Override
     public UserMessages getUserMessages(String to, String from) {
 
-        List<UserMessageReadStatusEntity> userMessageReadStatusEntity = null;
+        List<UserMessageReadStatusEntity> userMessageReadStatusEntity;
 
         if(StringUtils.isNotBlank(from)) {
             userMessageReadStatusEntity =  userMessageRepository.fetchUserUnreadMessages(to,from);
@@ -84,7 +84,7 @@ public class UserMessageServiceImpl implements UserMessageService {
     }
     private String retrieveUsername(String key) {
          if(key.contains("::"))
-             return key.substring(key.indexOf("::")+1,key.length());
+             return key.substring(key.indexOf("::")+1);
          else
              return key;
     }
