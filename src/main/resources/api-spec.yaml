@@ -107,16 +107,20 @@ paths:
           description: User not found
       tags:
         - messages
+  /messages/{messageType}/send:
     post:
-      operationId: sendMessageToUser
-      summary: send message to specific user
       parameters:
-        - name: username
+        - name: messageType
           in: path
-          description: username of the user to retrieve messages
+          description: direct message or group message
           required: true
           schema:
             type: string
+            enum:
+              - DIRECT
+              - GROUP
+      operationId: sendMessageToUser
+      summary: send message to specific user or group
       requestBody:
         required: true
         content:
@@ -191,8 +195,10 @@ components:
     TextMessageObject:
       type: object
       properties:
+        from:
+          type: int
         to:
-          type: string
+          type: int
         text:
           type: string
     TextMessageResponse:

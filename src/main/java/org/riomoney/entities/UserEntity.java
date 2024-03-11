@@ -14,7 +14,7 @@ public class UserEntity {
     @Column(name = "id")
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
+    private int id;
 
     @Column(name = "username",unique = true)
     private String userName;

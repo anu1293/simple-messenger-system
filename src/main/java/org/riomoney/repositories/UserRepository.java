@@ -11,6 +11,11 @@ import java.util.List;
 public interface UserRepository extends CrudRepository<UserEntity,Integer> {
     UserEntity findByUserName(String userName);
 
+    UserEntity findById(int id);
+
     @Query("select userName from UserEntity")
     List<String> listUserNames();
+
+    @Query("select m from UserEntity m where m.id in ?1")
+    List<UserEntity> listUsersById(List<Integer> id);
 }

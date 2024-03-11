@@ -13,7 +13,7 @@ public class GroupEntity {
     @Column(name = "id")
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
+    private int id;
 
     @Column(name = "name")
     private String name;

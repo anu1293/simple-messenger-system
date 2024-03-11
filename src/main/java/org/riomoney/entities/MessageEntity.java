@@ -2,6 +2,7 @@ package org.riomoney.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.sql.Timestamp;
@@ -9,6 +10,7 @@ import java.sql.Timestamp;
 @Data
 @Entity
 @Table(name = "messages")
+@RequiredArgsConstructor
 public class MessageEntity {
 
     @Id
@@ -21,4 +23,12 @@ public class MessageEntity {
 
     @Column(name = "message_timestamp")
     private Timestamp timestamp;
+
+    @ManyToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name="sender_id")
+    private UserEntity sender;
+
+    @ManyToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name="group_id")
+    private GroupEntity group;
 }
