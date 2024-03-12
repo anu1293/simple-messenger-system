@@ -29,6 +29,7 @@ public class GroupMesageServiceImpl implements GroupMesageService {
     public TextMessageResponse sendMessage(TextMessageObject textMessageObject) {
         GroupEntity to = groupRepository.findById(textMessageObject.getTo()).get();
         UserEntity from = userRepository.findById(textMessageObject.getFrom()).get();
+
         MessageEntity message = new MessageEntity();
         message.setMessage(textMessageObject.getText());
         message.setSender(from);
@@ -36,22 +37,22 @@ public class GroupMesageServiceImpl implements GroupMesageService {
         message.setGroup(to);
         message = messageRepository.save(message);
 
-        List<UserEntity> users = userGroupsRepository.findUsersByGroupId(to).stream().map(userGroup -> userGroup.getId().getUser()).collect(Collectors.toList());
+        List<UserEntity> users = userGroupsRepository.findUsersByGroupId(to)
+                .stream()
+                .map(userGroup -> userGroup.getId().getUser())
+                .toList();
 
         MessageEntity finalMessage = message;
+
         users.forEach(user ->{
                     UserMessageReadStatusEntityId id = new UserMessageReadStatusEntityId();
                     id.setUser(user);
                     id.setMessage(finalMessage);
                     UserMessageReadStatusEntity userMessageReadStatusEntity = new UserMessageReadStatusEntity();
                     userMessageReadStatusEntity.setId(id);
-                    if(user.equals(from))
-                        userMessageReadStatusEntity.setRead(true);
-                    else
-                        userMessageReadStatusEntity.setRead(false);
+                    userMessageReadStatusEntity.setRead(user.equals(from));
                     userMessageRepository.save(userMessageReadStatusEntity);
-                }
-                );
+                });
         return new TextMessageResponse().status("SUCCESS").text("Message sent successfully");
     }
 }
