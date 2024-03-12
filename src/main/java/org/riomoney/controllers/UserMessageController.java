@@ -1,5 +1,6 @@
 package org.riomoney.controllers;
 
+import org.riomoney.model.MessageType;
 import org.riomoney.model.TextMessageObject;
 import org.riomoney.model.TextMessageResponse;
 import org.riomoney.model.UserMessages;
@@ -21,11 +22,10 @@ public class UserMessageController implements MessagesApi{
     }
 
     @Override
-    public ResponseEntity<TextMessageResponse> sendMessageToUser(String messageType, TextMessageObject textMessageObject) {
+    public ResponseEntity<TextMessageResponse> sendMessageToUser(MessageType messageType, TextMessageObject textMessageObject) {
         return switch (messageType) {
-            case "DIRECT" -> ResponseEntity.ok(userMessageService.sendMessage(textMessageObject));
-            case "GROUP" -> ResponseEntity.ok(groupMesageService.sendMessage(textMessageObject));
-            default -> (ResponseEntity<TextMessageResponse>) ResponseEntity.badRequest();
+            case DIRECT -> ResponseEntity.ok(userMessageService.sendMessage(textMessageObject));
+            case GROUP -> ResponseEntity.ok(groupMesageService.sendMessage(textMessageObject));
         };
     }
 

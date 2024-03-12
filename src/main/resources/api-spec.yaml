@@ -12,6 +12,8 @@ tags:
     description: Operations related to authentication of the user
   - name: messages
     description: Operations related to users messages
+  - name: groups
+    description: Operations related to user groups
 paths:
   /auth/signup:
     post:
@@ -115,10 +117,7 @@ paths:
           description: direct message or group message
           required: true
           schema:
-            type: string
-            enum:
-              - DIRECT
-              - GROUP
+            $ref: '#/components/schemas/MessageType'
       operationId: sendMessageToUser
       summary: send message to specific user or group
       requestBody:
@@ -136,7 +135,51 @@ paths:
                 $ref: '#/components/schemas/TextMessageResponse'
       tags:
         - messages
-
+  /groups/create:
+    post:
+      operationId: createGroup
+      summary: create user group
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGroupRequest'
+      responses:
+        200:
+          description: success message
+          content:
+            application/json:
+              schema:
+                type: boolean
+      tags:
+        - groups
+  /groups/{operation}/members:
+    post:
+      operationId: addMembersToGroup
+      summary: add members to group
+      parameters:
+        - name: operation
+          in: path
+          description: group members add or remove
+          required: true
+          schema:
+             $ref: '#/components/schemas/GroupOperation'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+             $ref: '#/components/schemas/GroupMembersAddOrRemoveRequest'
+      responses:
+        200:
+          description: success message
+          content:
+            application/json:
+               schema:
+                 type: boolean
+      tags:
+        - groups
 components:
   schemas:
     CreateUserResponse:
@@ -227,5 +270,48 @@ components:
       properties:
         username:
           type: string
+    MessageType:
+      type: string
+      enum:
+        - DIRECT
+        - GROUP
+    GroupOperation:
+      type: string
+      enum:
+        - ADD
+        - REMOVE
+    CreateGroupRequest:
+      type: object
+      properties:
+        groupName:
+          type: string
+        members:
+          type: array
+          items:
+            type: int
+    CreateGroupResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+    GroupMembersAddOrRemoveRequest:
+      type: object
+      properties:
+        groupId:
+          type: int
+        members:
+          type: array
+          items:
+            type: int
+    GroupMembersAddOrRemoveResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+
 
 
