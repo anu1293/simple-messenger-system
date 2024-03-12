@@ -6,9 +6,10 @@ import org.riomoney.model.TextMessageResponse;
 import org.riomoney.repositories.*;
 import org.riomoney.service.GroupMesageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class GroupMesageServiceImpl implements GroupMesageService {
     @Autowired
     UserMessageRepository userMessageRepository;

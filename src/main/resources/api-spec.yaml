@@ -191,6 +191,8 @@ components:
         message:
           type: string
           description: "response message"
+        token:
+          type: string
     CreateUserRequest:
       type: object
       properties:
@@ -264,6 +266,8 @@ components:
         status:
           type: string
         message:
+          type: string
+        token:
           type: string
     LogoutRequest:
       type: object

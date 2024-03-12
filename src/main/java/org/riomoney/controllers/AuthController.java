@@ -2,6 +2,7 @@ package org.riomoney.controllers;
 
 import org.riomoney.model.*;
 import org.riomoney.repositories.UserRepository;
+import org.riomoney.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,10 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AuthController implements AuthApi {
     @Autowired
-    UserRepository userRepository;
+    AuthService authService;
     @Override
     public ResponseEntity<LoginResponse> signIn(LoginRequest loginRequest) {
-        return null;
+        return ResponseEntity.ok(authService.signin(loginRequest));
     }
 
     @Override
@@ -22,6 +23,6 @@ public class AuthController implements AuthApi {
 
     @Override
     public ResponseEntity<CreateUserResponse> signUp(CreateUserRequest createUserRequest) {
-        return null;
+        return ResponseEntity.ok(authService.signup(createUserRequest));
     }
 }

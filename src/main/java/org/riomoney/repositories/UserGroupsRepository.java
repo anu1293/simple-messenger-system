@@ -6,9 +6,11 @@ import org.riomoney.entities.UserGroupEntity;
 import org.riomoney.entities.UserGroupId;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
-
+@Repository
 public interface UserGroupsRepository extends CrudRepository<UserGroupEntity, UserGroupId> {
     @Query("select UserEntity from UserGroupEntity where id.group=?1")
     List<UserEntity> findUsersByGroupId(GroupEntity group);

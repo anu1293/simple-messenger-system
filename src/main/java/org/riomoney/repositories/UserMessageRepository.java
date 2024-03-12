@@ -13,6 +13,6 @@ public interface UserMessageRepository extends CrudRepository<UserMessageReadSta
     @Query("SELECT m FROM UserMessageReadStatusEntity m where m.id.user.id=?1 and m.isRead=FALSE order by m.id.message.timestamp asc")
     List<UserMessageReadStatusEntity> fetchUserUnreadMessages(String to);
 
-    @Query("SELECT m FROM UserMessagesReadInfoEntity m WHERE m.id.user.id=?1 and m.id.message.sender.id=?2 and m.isRead=FALSE order by m.id.message.timestamp asc")
+    @Query("SELECT m FROM UserMessageReadStatusEntity m WHERE m.id.user.id=?1 and m.id.message.sender.id=?2 and m.isRead=FALSE order by m.id.message.timestamp asc")
     List<UserMessageReadStatusEntity> fetchUserUnreadMessages(String to, String from);
 }

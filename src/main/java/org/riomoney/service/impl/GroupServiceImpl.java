@@ -5,16 +5,16 @@ import org.riomoney.entities.UserEntity;
 import org.riomoney.entities.UserGroupEntity;
 import org.riomoney.entities.UserGroupId;
 import org.riomoney.model.CreateGroupRequest;
-import org.riomoney.model.CreteGroupRequest;
 import org.riomoney.repositories.GroupRepository;
 import org.riomoney.repositories.UserGroupsRepository;
 import org.riomoney.repositories.UserRepository;
 import org.riomoney.service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Service
 public class GroupServiceImpl implements GroupService {
     @Autowired
     GroupRepository groupRepository;

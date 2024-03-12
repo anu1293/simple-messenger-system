@@ -6,10 +6,20 @@ spring:
     driverClassName: org.h2.Driver
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
-    hibernate.ddl-auto: none
+    hibernate.ddl-auto: create-drop
     #defer-datasource-initialization: true
 
   h2:
     console.enabled: true
   sql:
-    init.mode: always
+    init.mode: never
+logging:
+  level:
+    org:
+      springframework:
+        security:
+          web:
+            FilterChainProxy=DEBUG:
+token:
+  signing:
+    key: 413F4428472B4B6250655368566D5970337336763979244226452948404D6351

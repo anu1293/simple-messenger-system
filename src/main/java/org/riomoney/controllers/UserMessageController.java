@@ -28,6 +28,4 @@ public class UserMessageController implements MessagesApi{
             case GROUP -> ResponseEntity.ok(groupMesageService.sendMessage(textMessageObject));
         };
     }
-
-
 }
