@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 @Service
@@ -46,6 +49,7 @@ public class UserMessageServiceImpl implements UserMessageService {
         MessageEntity message = new MessageEntity();
         message.setMessage(textMessageObject.getText());
         message.setSender(from);
+        message.setTimestamp(Timestamp.from(Instant.now()));
         message = messageRepository.save(message);
         UserMessageReadStatusEntityId id = new UserMessageReadStatusEntityId();
         id.setUser(to);
@@ -53,6 +57,7 @@ public class UserMessageServiceImpl implements UserMessageService {
         UserMessageReadStatusEntity userMessageReadStatusEntity = new UserMessageReadStatusEntity();
         userMessageReadStatusEntity.setId(id);
         userMessageReadStatusEntity.setRead(false);
+        userMessageRepository.save(userMessageReadStatusEntity);
         return new TextMessageResponse().status("SUCCESS").text("Message sent successfully");
     }
 

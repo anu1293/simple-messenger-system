@@ -1,7 +1,7 @@
 package org.riomoney.controllers;
 
+import org.apache.coyote.Response;
 import org.riomoney.model.*;
-import org.riomoney.repositories.UserRepository;
 import org.riomoney.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +17,8 @@ public class AuthController implements AuthApi {
     }
 
     @Override
-    public ResponseEntity<Void> signOut(LogoutRequest logoutRequest) {
-        return null;
+    public ResponseEntity<Boolean> signOut(String authorization) {
+        return  ResponseEntity.ok(authService.signout(authorization));
     }
 
     @Override

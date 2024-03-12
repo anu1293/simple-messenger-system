@@ -55,17 +55,22 @@ paths:
         - auth
   /auth/logout:
     post:
+      parameters:
+        - name: Authorization
+          in: header
+          description: jwt token to invalidate
+          required: true
+          schema:
+            type: string
       operationId: signOut
       summary: logout user
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LogoutRequest'
       responses:
         200:
           description: logged out successfully
+          content:
+            application/json:
+              schema:
+                type: boolean
       tags:
         - auth
   /users:

@@ -21,7 +21,7 @@ public class MessageEntity {
     @Column(name = "message")
     private String message;
 
-    @Column(name = "message_timestamp")
+    @Column(name = "message_timestamp", nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP")
     private Timestamp timestamp;
 
     @ManyToOne(fetch=FetchType.EAGER)

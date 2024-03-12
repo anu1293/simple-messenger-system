@@ -12,6 +12,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 @Repository
 public interface UserGroupsRepository extends CrudRepository<UserGroupEntity, UserGroupId> {
-    @Query("select UserEntity from UserGroupEntity where id.group=?1")
-    List<UserEntity> findUsersByGroupId(GroupEntity group);
+    @Query("select users from UserGroupEntity users where id.group=?1")
+    List<UserGroupEntity> findUsersByGroupId(GroupEntity group);
 }

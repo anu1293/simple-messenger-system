@@ -16,7 +16,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -31,7 +30,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(CsrfConfigurer::disable)
-                .securityMatcher(new MyRequestMatcher())
+                .securityMatcher(new AuthEligibleRequestMatcher())
                 .authorizeHttpRequests(request -> request.requestMatchers("/users").authenticated()
                         .requestMatchers("/messages/**").authenticated()
                         .requestMatchers("/groups/**").authenticated()

@@ -11,19 +11,23 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 @Service
 public class JwtServiceImpl implements JwtService {
 
-    @Value("${token.signing.key}")
+    @Value("${token.key}")
     private String jwtKey;
+
+    private static final Set<String> blacklist = new HashSet<>();
     @Override
     public String extractUserName(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+    @Override
+    public String extractTokenId(String token) {
+        return extractClaim(token, Claims::getId);
     }
 
     @Override
@@ -32,9 +36,16 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
+    public boolean invalidateToken(String token) {
+        String jti = extractTokenId(token);
+        return blacklist.add(jti);
+    }
+
+    @Override
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String userName = extractUserName(token);
-        return (userName.equals(userDetails.getUsername())) && !isTokenExpired(token);
+        final String jti = extractTokenId(token);
+        return (userName.equals(userDetails.getUsername())) && !isTokenExpired(token) && !blacklist.contains(jti);
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolvers) {
@@ -43,10 +54,9 @@ public class JwtServiceImpl implements JwtService {
     }
 
     private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        return Jwts.builder().claims(extraClaims).subject(userDetails.getUsername()).issuedAt(new Date(System.currentTimeMillis())).expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+        return Jwts.builder().claims(extraClaims).subject(userDetails.getUsername()).id(UUID.randomUUID().toString()).issuedAt(new Date(System.currentTimeMillis())).expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256).compact();
     }
-
     private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }

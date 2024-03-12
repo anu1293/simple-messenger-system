@@ -2,10 +2,7 @@ package org.riomoney.service.impl;
 
 import org.apache.commons.lang3.StringUtils;
 import org.riomoney.entities.UserEntity;
-import org.riomoney.model.CreateUserRequest;
-import org.riomoney.model.CreateUserResponse;
-import org.riomoney.model.LoginRequest;
-import org.riomoney.model.LoginResponse;
+import org.riomoney.model.*;
 import org.riomoney.repositories.UserRepository;
 import org.riomoney.service.AuthService;
 import org.riomoney.service.JwtService;
@@ -50,5 +47,9 @@ public class AuthServiceImpl implements AuthService {
         var user = User.builder().username(userEnity.getUsername()).password(userEnity.getPassword()).build();
             var jwt = jwtService.createToken(user);
         return new LoginResponse().token(jwt).status("SUCCESS").message("LOGGED IN SUCCESSFULLY");
+    }
+    @Override
+    public boolean signout(String token) {
+        return jwtService.invalidateToken(token.substring(7));
     }
 }
