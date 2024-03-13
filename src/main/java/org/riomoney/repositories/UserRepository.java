@@ -6,6 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface UserRepository extends CrudRepository<UserEntity,Integer> {
@@ -17,5 +18,5 @@ public interface UserRepository extends CrudRepository<UserEntity,Integer> {
     List<String> listUserNames();
 
     @Query("select m from UserEntity m where m.id in ?1")
-    List<UserEntity> listUsersById(List<Integer> id);
+    List<UserEntity> listUsersById(Set<Integer> id);
 }

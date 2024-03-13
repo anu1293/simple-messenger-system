@@ -2,7 +2,7 @@ package org.riomoney.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.sql.Timestamp;
@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 @Data
 @Entity
 @Table(name = "messages")
-@RequiredArgsConstructor
+@EqualsAndHashCode
 public class MessageEntity {
 
     @Id

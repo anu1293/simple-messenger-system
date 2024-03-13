@@ -1,7 +1,10 @@
 package org.riomoney.service.impl;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.riomoney.entities.*;
+import org.riomoney.exceptions.UserNotFoundException;
 import org.riomoney.model.TextMessageObject;
 import org.riomoney.model.TextMessageResponse;
 import org.riomoney.model.UserMessage;
@@ -9,6 +12,7 @@ import org.riomoney.model.UserMessages;
 import org.riomoney.repositories.MessageRepository;
 import org.riomoney.repositories.UserMessageRepository;
 import org.riomoney.repositories.UserRepository;
+import org.riomoney.service.JwtService;
 import org.riomoney.service.UserMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -18,6 +22,7 @@ import org.springframework.util.CollectionUtils;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 @Service
 public class UserMessageServiceImpl implements UserMessageService {
@@ -27,32 +32,41 @@ public class UserMessageServiceImpl implements UserMessageService {
     UserRepository userRepository;
     @Autowired
     MessageRepository messageRepository;
+    @Autowired
+    JwtService jwtService;
 
     @Override
-    public UserMessages getUserMessages(String to, String from) {
-
+    public UserMessages getUserMessages(String token, String from) throws UserNotFoundException {
+        UserEntity sender = userRepository.findByUserName(from);
+        String receiver = jwtService.extractUserName(token.substring(7));
+        UserEntity user = userRepository.findByUserName(receiver);
         List<UserMessageReadStatusEntity> userMessageReadStatusEntity;
-
         if(StringUtils.isNotBlank(from)) {
-            userMessageReadStatusEntity =  userMessageRepository.fetchUserUnreadMessages(to,from);
+            if(sender == null) {
+                throw new UserNotFoundException("receiver userid is invalid");
+            }
+            userMessageReadStatusEntity =  userMessageRepository.fetchUserUnreadMessages(user,sender);
         } else {
-            userMessageReadStatusEntity = userMessageRepository.fetchUserUnreadMessages(to);
+            userMessageReadStatusEntity = userMessageRepository.fetchUserUnreadMessages(user);
         }
         return getUserMessagesFromEntity(userMessageReadStatusEntity);
-
     }
 
     @Override
-    public TextMessageResponse sendMessage(TextMessageObject textMessageObject) {
-        UserEntity to = userRepository.findById(textMessageObject.getTo()).get();
-        UserEntity from = userRepository.findById(textMessageObject.getFrom()).get();
+    public TextMessageResponse sendMessage(String token, TextMessageObject textMessageObject) throws UserNotFoundException {
+        String sender = jwtService.extractUserName(token.substring(7));
+        Optional<UserEntity> to = userRepository.findById(textMessageObject.getTo());
+        if(to.isEmpty()) {
+            throw new UserNotFoundException("receiver userid is invalid");
+        }
+        UserEntity from = userRepository.findByUserName(sender);
         MessageEntity message = new MessageEntity();
         message.setMessage(textMessageObject.getText());
         message.setSender(from);
         message.setTimestamp(Timestamp.from(Instant.now()));
         message = messageRepository.save(message);
         UserMessageReadStatusEntityId id = new UserMessageReadStatusEntityId();
-        id.setUser(to);
+        id.setUser(to.get());
         id.setMessage(message);
         UserMessageReadStatusEntity userMessageReadStatusEntity = new UserMessageReadStatusEntity();
         userMessageReadStatusEntity.setId(id);

@@ -2,6 +2,7 @@ package org.riomoney.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +15,7 @@ import java.util.Collections;
 @Data
 @Entity
 @Table(name = "users")
+@EqualsAndHashCode
 public class UserEntity implements UserDetails{
 
     @Column(name = "id")

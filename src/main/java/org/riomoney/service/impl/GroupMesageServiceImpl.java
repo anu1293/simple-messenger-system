@@ -1,17 +1,19 @@
 package org.riomoney.service.impl;
 
 import org.riomoney.entities.*;
+import org.riomoney.exceptions.GroupNotFoundException;
 import org.riomoney.model.TextMessageObject;
 import org.riomoney.model.TextMessageResponse;
 import org.riomoney.repositories.*;
 import org.riomoney.service.GroupMesageService;
+import org.riomoney.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class GroupMesageServiceImpl implements GroupMesageService {
@@ -25,19 +27,25 @@ public class GroupMesageServiceImpl implements GroupMesageService {
     GroupRepository groupRepository;
     @Autowired
     UserGroupsRepository userGroupsRepository;
+    @Autowired
+    JwtService jwtService;
     @Override
-    public TextMessageResponse sendMessage(TextMessageObject textMessageObject) {
-        GroupEntity to = groupRepository.findById(textMessageObject.getTo()).get();
-        UserEntity from = userRepository.findById(textMessageObject.getFrom()).get();
+    public TextMessageResponse sendMessage(String authorization,TextMessageObject textMessageObject) throws GroupNotFoundException {
+        Optional<GroupEntity> to = groupRepository.findById(textMessageObject.getTo());
+        if(to.isEmpty()) {
+            throw new GroupNotFoundException("invalid group id :"+textMessageObject.getTo());
+        }
+        String sender = jwtService.extractUserName(authorization.substring(7));
+        UserEntity from = userRepository.findByUserName(sender);
 
         MessageEntity message = new MessageEntity();
         message.setMessage(textMessageObject.getText());
         message.setSender(from);
         message.setTimestamp(Timestamp.from(Instant.now()));
-        message.setGroup(to);
+        message.setGroup(to.get());
         message = messageRepository.save(message);
 
-        List<UserEntity> users = userGroupsRepository.findUsersByGroupId(to)
+        List<UserEntity> users = userGroupsRepository.findUsersByGroupId(to.get())
                 .stream()
                 .map(userGroup -> userGroup.getId().getUser())
                 .toList();
