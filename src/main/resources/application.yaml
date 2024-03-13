@@ -11,6 +11,8 @@ spring:
 
   h2:
     console.enabled: true
+    console.settings.web-allow-others: true
+
   sql:
     init.mode: never
 logging:

@@ -85,9 +85,6 @@ sourceSets {
 bootRun {
     mainClass = "org.riomoney.Application"
 }
-bootJar {
-    "org.riomoney.Application"
-}
 
 openApiValidate {
     inputSpec = "${rootDir}/src/main/resources/api-spec.yaml".toString()
