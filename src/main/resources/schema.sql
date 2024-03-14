@@ -39,3 +39,10 @@ CREATE TABLE read_status (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 -------------------------------------------------------------
+CREATE TABLE blocked_conversation (
+    user_id1 INT NOT NULL,
+    user_id2 INT NOT NULL,
+    PRIMARY KEY (user_id1, user_id2),
+    FOREIGN KEY (user_id1) REFERENCES users(id),
+    FOREIGN KEY (user_id2) REFERENCES users(id)
+);

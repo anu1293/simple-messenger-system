@@ -92,6 +92,38 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
       tags:
         - users
+  /users/user/block/{userId}:
+    post:
+      operationId: blockUser
+      summary: blocks user from sending or receiving further texts
+      parameters:
+        - name: Authorization
+          in: header
+          description: jwt token to extract username
+          required: true
+          schema:
+            type: string
+        - name: userId
+          in: path
+          description: user id of the user whose messages needs to be blocked
+          required: true
+          schema:
+            type: int
+      responses:
+        200:
+          description: request executed successfuly
+          content:
+            application/json:
+              schema:
+                type: boolean
+        500:
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - users
   /messages/getMessages:
     get:
       operationId: fetchUserMessages

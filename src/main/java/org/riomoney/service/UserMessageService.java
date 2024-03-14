@@ -9,5 +9,5 @@ import org.riomoney.model.UserMessages;
 public interface UserMessageService {
 
     UserMessages getUserMessages(String to, String from) throws UserNotFoundException;
-    TextMessageResponse sendMessage(String authorization,TextMessageObject textMessageObject) throws UserNotFoundException, GroupNotFoundException;
+    TextMessageResponse sendMessage(String authorization,TextMessageObject textMessageObject) throws Exception;
 }

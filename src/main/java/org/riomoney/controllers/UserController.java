@@ -10,8 +10,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController implements UsersApi {
     @Autowired
     UserService userService;
+
+    @Override
+    public ResponseEntity<Boolean> blockUser(String token, Integer friend) {
+       return ResponseEntity.ok(userService.blockUser(friend,token));
+    }
+
     @Override
     public ResponseEntity<UserList> fetchAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
+
 }

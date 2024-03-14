@@ -31,7 +31,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(CsrfConfigurer::disable)
                 .securityMatcher(new AuthEligibleRequestMatcher())
-                .authorizeHttpRequests(request -> request.requestMatchers("/users").authenticated()
+                .authorizeHttpRequests(request -> request.requestMatchers("/users/**").authenticated()
                         .requestMatchers("/messages/**").authenticated()
                         .requestMatchers("/groups/**").authenticated()
                         .anyRequest().permitAll())

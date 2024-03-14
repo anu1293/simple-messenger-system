@@ -7,6 +7,6 @@ public class AuthEligibleRequestMatcher implements RequestMatcher {
     @Override
     public boolean matches(HttpServletRequest request) {
         String path = request.getServletPath();
-        return path.equals("/users") || path.contains("/groups/") || path.contains("/messages/");
+        return path.contains("/users") || path.contains("/groups/") || path.contains("/messages/");
     }
 }

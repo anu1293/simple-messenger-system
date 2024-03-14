@@ -4,11 +4,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.riomoney.entities.*;
+import org.riomoney.exceptions.BlockedConversationException;
 import org.riomoney.exceptions.UserNotFoundException;
 import org.riomoney.model.TextMessageObject;
 import org.riomoney.model.TextMessageResponse;
 import org.riomoney.model.UserMessage;
 import org.riomoney.model.UserMessages;
+import org.riomoney.repositories.BlockedConversationRepository;
 import org.riomoney.repositories.MessageRepository;
 import org.riomoney.repositories.UserMessageRepository;
 import org.riomoney.repositories.UserRepository;
@@ -21,6 +23,8 @@ import org.springframework.util.CollectionUtils;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,6 +36,8 @@ public class UserMessageServiceImpl implements UserMessageService {
     UserRepository userRepository;
     @Autowired
     MessageRepository messageRepository;
+    @Autowired
+    BlockedConversationRepository blockedConversationRepository;
     @Autowired
     JwtService jwtService;
 
@@ -53,13 +59,17 @@ public class UserMessageServiceImpl implements UserMessageService {
     }
 
     @Override
-    public TextMessageResponse sendMessage(String token, TextMessageObject textMessageObject) throws UserNotFoundException {
+    public TextMessageResponse sendMessage(String token, TextMessageObject textMessageObject) throws UserNotFoundException, BlockedConversationException {
         String sender = jwtService.extractUserName(token.substring(7));
         Optional<UserEntity> to = userRepository.findById(textMessageObject.getTo());
         if(to.isEmpty()) {
             throw new UserNotFoundException("receiver userid is invalid");
         }
         UserEntity from = userRepository.findByUserName(sender);
+        // add a check here if either user has blocked the other, if yes, then throw exception
+        if(checkForBlockedConversation(to.get(),from)) {
+            throw new BlockedConversationException("senders conversation with receiver is blocked");
+        }
         MessageEntity message = new MessageEntity();
         message.setMessage(textMessageObject.getText());
         message.setSender(from);
@@ -115,5 +125,19 @@ public class UserMessageServiceImpl implements UserMessageService {
             return null;
     }
 
-
+private boolean checkForBlockedConversation(UserEntity user1, UserEntity user2) {
+        BlockedConversationEntityId id1= new BlockedConversationEntityId();
+        BlockedConversationEntityId id2= new BlockedConversationEntityId();
+        id1.setUser1(user1);
+        id1.setUser2(user2);
+        id2.setUser1(user2);
+        id2.setUser2(user1);
+        List<BlockedConversationEntityId> ids = new ArrayList<>();
+        ids.add(id1);
+        ids.add(id2);
+         List<BlockedConversationEntity> entities = (List<BlockedConversationEntity>) blockedConversationRepository.findAllById(ids);
+         if(CollectionUtils.isEmpty(entities))
+             return false;
+         return true;
+}
 }
