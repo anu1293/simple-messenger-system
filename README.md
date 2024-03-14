@@ -42,14 +42,14 @@ Can be imported from api-spec.yaml file directly
 
 # Built Using
 1. JAVA
-2. SPRING BOOT 6
-3. SPRING SECURITY 6
+2. SPRING BOOT
+3. SPRING SECURITY
 4. JWT token
 5. H2 DB
 6. DOCKER
-7. OPEN API 3.0
+7. OPEN API
 8. JPA
-9. Gradle 8
+9. Gradle
 
 
 
