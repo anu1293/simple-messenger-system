@@ -1,12 +1,16 @@
 ### SIMPLE MESSENGER SYSTEM
 # 1.  Build and Run
-**docker command to build** : docker build -t simple-messenger-system.jar .
-**docker command to run** :  docker run -d -p 8080:8080 {latest image}
-# 2. Login to H2 Database
-**open url**  localhost:8080/h2-console
-**change JDBC URL to** jdbc:h2:mem:sms
-**username**: anupam
-**password**: anupam
+
+
+    docker command to build : docker build -t simple-messenger-system.jar .
+    docker command to run :  docker run -d -p 8080:8080 {latest image}
+# 2. Login into H2 Database
+
+
+    open url :  localhost:8080/h2-console
+    change JDBC URL to jdbc:h2:mem:sms
+    username: anupam
+    password: anupam
 
 opening H2 console in a separate window will help checking how data is being stored and to check user ids which needs to be used in the apis
 
@@ -33,8 +37,19 @@ opening H2 console in a separate window will help checking how data is being sto
     /groups/{operation}/members -> api to add or remove users from a group, user/group should be registered in the system before they are being added, provide user_ids of the users in an array who you want to add or remove.  operation=ADD|REMOVE
 
 
-postman API collection can be imported from api-spec.yaml file directly
+# postman API collection
+Can be imported from api-spec.yaml file directly
 
+# Built Using
+1. JAVA
+2. SPRING BOOT 6
+3. SPRING SECURITY 6
+4. JWT token
+5. H2 DB
+6. DOCKER
+7. OPEN API 3.0
+8. JPA
+9. Gradle 8
 
 
 
